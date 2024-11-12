@@ -1,9 +1,10 @@
 :root {
     --primary-color: #8B5CF6;
     --background-dark: #1A1A1A;
-    --card-background: #FFFFFF;
-    --text-dark: #333333;
-    --accent-yellow: #E9FF63;
+    --card-background: #2A2A2A;
+    --text-dark: #FFFFFF;
+    --accent-color: #E9FF63;
+    --section-background: #3A3A3A;
 }
 
 body {
@@ -106,14 +107,77 @@ select:disabled {
 .workout-details {
     display: none;
     margin-top: 15px;
-    padding: 15px;
-    background: #F5F5F5;
+    padding: 20px;
+    background: var(--section-background);
     border-radius: 15px;
     font-size: 14px;
+    color: #FFFFFF;
+}
+
+.workout-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.workout-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.workout-list li {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    line-height: 1.4;
+}
+
+.complex-title {
+    color: var(--accent-color);
+    font-weight: 600;
+    margin: 15px 0 8px 0;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent-color);
+}
+
+.exercise-item {
+    padding: 8px 12px 8px 25px;
+    position: relative;
+    margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+}
+
+.exercise-item:before {
+    content: "•";
+    position: absolute;
+    left: 10px;
+    color: var(--primary-color);
+}
+
+.workout-meta {
+    background: rgba(139, 92, 246, 0.2);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    border: 1px solid var(--primary-color);
 }
 
 .workout-card.completed {
-    border: 2px solid var(--primary-color);
+    border: 2px solid #4CAF50;
 }
 
 .workout-card.completed .complete-btn {
@@ -149,16 +213,4 @@ select:disabled {
 .nav-icon {
     font-size: 20px;
     margin-bottom: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --card-background: #2A2A2A;
-        --text-dark: #FFFFFF;
-    }
-
-    .workout-details {
-        background: #3A3A3A;
-        color: #FFFFFF;
-    }
 }
