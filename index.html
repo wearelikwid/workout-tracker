@@ -1,137 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- [Previous head section remains the same] -->
-
-<script>
-    // Add these new functions for storage
-    function saveProgress(dayId, isCompleted) {
-        const month = document.getElementById('monthSelect').value;
-        const week = document.getElementById('weekSelect').value;
-        const key = `workout-${month}-${week}-${dayId}`;
-        localStorage.setItem(key, isCompleted);
-    }
-
-    function loadProgress(dayId) {
-        const month = document.getElementById('monthSelect').value;
-        const week = document.getElementById('weekSelect').value;
-        const key = `workout-${month}-${week}-${dayId}`;
-        return localStorage.getItem(key) === 'true';
-    }
-
-    function handleMonthChange() {
-        const monthSelect = document.getElementById('monthSelect');
-        const weekSelect = document.getElementById('weekSelect');
-        const workoutContainer = document.getElementById('workoutContainer');
-        
-        if (monthSelect.value) {
-            weekSelect.disabled = false;
-        } else {
-            weekSelect.disabled = true;
-            workoutContainer.classList.add('hidden');
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
         }
-        
-        weekSelect.value = '';
-        workoutContainer.classList.add('hidden');
-    }
-
-    function handleWeekChange() {
-        const weekSelect = document.getElementById('weekSelect');
-        const workoutContainer = document.getElementById('workoutContainer');
-        
-        if (weekSelect.value) {
-            workoutContainer.classList.remove('hidden');
-            loadWorkouts();
-        } else {
-            workoutContainer.classList.add('hidden');
+        .controls {
+            margin-bottom: 20px;
         }
-    }
-
-    function toggleDayDetails(dayId) {
-        const details = document.getElementById(`details-${dayId}`);
-        const allDetails = document.getElementsByClassName('workout-details');
-        
-        Array.from(allDetails).forEach(detail => {
-            if (detail.id !== `details-${dayId}`) {
-                detail.style.display = 'none';
-            }
-        });
-
-        if (details.style.display === 'none' || !details.style.display) {
-            details.style.display = 'block';
-        } else {
-            details.style.display = 'none';
+        .hidden {
+            display: none;
         }
-    }
+        .workout-card {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .workout-card.completed {
+            background-color: #e0ffe0;
+        }
+        .workout-details {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .complete-btn {
+            float: right;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        select {
+            padding: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <select id="monthSelect" onchange="handleMonthChange()">
+            <option value="">Select Month</option>
+            <option value="1">Month 1</option>
+            <option value="2">Month 2</option>
+            <option value="3">Month 3</option>
+        </select>
+        <select id="weekSelect" onchange="handleWeekChange()" disabled>
+            <option value="">Select Week</option>
+            <option value="1">Week 1</option>
+            <option value="2">Week 2</option>
+            <option value="3">Week 3</option>
+            <option value="4">Week 4</option>
+        </select>
+    </div>
 
-    function markComplete(dayId, event) {
-        event.stopPropagation();
-        const dayCard = document.getElementById(dayId);
-        const isCompleted = !dayCard.classList.contains('completed');
-        dayCard.classList.toggle('completed');
-        const button = event.target;
-        button.textContent = isCompleted ? 'Completed' : 'Mark Complete';
-        
-        // Save the completion status
-        saveProgress(dayId, isCompleted);
-    }
+    <div id="workoutContainer" class="hidden">
+        <div id="sunday" class="workout-card" onclick="toggleDayDetails('sunday')">
+            <span>Sunday</span>
+            <button class="complete-btn" onclick="markComplete('sunday', event)">Mark Complete</button>
+            <div id="details-sunday" class="workout-details"></div>
+        </div>
 
-    function loadWorkouts() {
-        const month = document.getElementById('monthSelect').value;
-        const week = document.getElementById('weekSelect').value;
-        
-        const days = ['sunday', 'monday', 'tuesday', 'wednesday'];
-        days.forEach(day => {
-            const details = document.getElementById(`details-${day}`);
-            if (details) {
-                details.innerHTML = '';
-            }
+        <div id="monday" class="workout-card" onclick="toggleDayDetails('monday')">
+            <span>Monday</span>
+            <button class="complete-btn" onclick="markComplete('monday', event)">Mark Complete</button>
+            <div id="details-monday" class="workout-details"></div>
+        </div>
+
+        <div id="tuesday" class="workout-card" onclick="toggleDayDetails('tuesday')">
+            <span>Tuesday</span>
+            <button class="complete-btn" onclick="markComplete('tuesday', event)">Mark Complete</button>
+            <div id="details-tuesday" class="workout-details"></div>
+        </div>
+
+        <div id="wednesday" class="workout-card" onclick="toggleDayDetails('wednesday')">
+            <span>Wednesday</span>
+            <button class="complete-btn" onclick="markComplete('wednesday', event)">Mark Complete</button>
+            <div id="details-wednesday" class="workout-details"></div>
+        </div>
+    </div>
+
+    <!-- Link all your workout JavaScript files here -->
+    <script src="month1_week1.js"></script>
+    <script src="month1_week2.js"></script>
+    <script src="month1_week3.js"></script>
+    <script src="month1_week4.js"></script>
+    <script src="month2_week1.js"></script>
+    <script src="month2_week2.js"></script>
+    <script src="month2_week3.js"></script>
+    <script src="month2_week4.js"></script>
+    <script src="month3_week1.js"></script>
+    <script src="month3_week2.js"></script>
+    <script src="month3_week3.js"></script>
+    <script src="month3_week4.js"></script>
+
+    <script>
+        // [Your storage and functionality JavaScript goes here - the code you shared]
+        function saveProgress(dayId, isCompleted) {
+            const month = document.getElementById('monthSelect').value;
+            const week = document.getElementById('weekSelect').value;
+            const key = `workout-${month}-${week}-${dayId}`;
+            localStorage.setItem(key, isCompleted);
+        }
+
+        function loadProgress(dayId) {
+            const month = document.getElementById('monthSelect').value;
+            const week = document.getElementById('weekSelect').value;
+            const key = `workout-${month}-${week}-${dayId}`;
+            return localStorage.getItem(key) === 'true';
+        }
+
+        function handleMonthChange() {
+            const monthSelect = document.getElementById('monthSelect');
+            const weekSelect = document.getElementById('weekSelect');
+            const workoutContainer = document.getElementById('workoutContainer');
             
-            // Load and apply saved completion status
-            const dayCard = document.getElementById(day);
-            const button = dayCard.querySelector('.complete-btn');
-            const isCompleted = loadProgress(day);
-            
-            if (isCompleted) {
-                dayCard.classList.add('completed');
-                button.textContent = 'Completed';
+            if (monthSelect.value) {
+                weekSelect.disabled = false;
             } else {
-                dayCard.classList.remove('completed');
-                button.textContent = 'Mark Complete';
+                weekSelect.disabled = true;
+                workoutContainer.classList.add('hidden');
             }
-        });
-        
-        if (month === '1') {
-            if (week === '1') {
-                loadMonth1Week1Workouts();
-            } else if (week === '2') {
-                loadMonth1Week2Workouts();
-            } else if (week === '3') {           
-                loadMonth1Week3Workouts();       
-            } else if (week === '4') {           
-                loadMonth1Week4Workouts();       
-            }
-        } else if (month === '2') {
-            if (week === '1') {
-                loadMonth2Week1Workouts();
-            } else if (week === '2') {
-                loadMonth2Week2Workouts();
-            } else if (week === '3') {
-                loadMonth2Week3Workouts();
-            } else if (week === '4') {
-                loadMonth2Week4Workouts();
-            }
-        } else if (month === '3') {
-            if (week === '1') {
-                loadMonth3Week1Workouts();
-            } else if (week === '2') {
-                loadMonth3Week2Workouts();
-            } else if (week === '3') {
-                loadMonth3Week3Workouts();
-            } else if (week === '4') {
-                loadMonth3Week4Workouts();
+            
+            weekSelect.value = '';
+            workoutContainer.classList.add('hidden');
+        }
+
+        function handleWeekChange() {
+            const weekSelect = document.getElementById('weekSelect');
+            const workoutContainer = document.getElementById('workoutContainer');
+            
+            if (weekSelect.value) {
+                workoutContainer.classList.remove('hidden');
+                loadWorkouts();
+            } else {
+                workoutContainer.classList.add('hidden');
             }
         }
-    }  
-</script>
+
+        function toggleDayDetails(dayId) {
+            const details = document.getElementById(`details-${dayId}`);
+            const allDetails = document.getElementsByClassName('workout-details');
+            
+            Array.from(allDetails).forEach(detail => {
+                if (detail.id !== `details-${dayId}`) {
+                    detail.style.display = 'none';
+                }
+            });
+
+            if (details.style.display === 'none' || !details.style.display) {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+
+        function markComplete(dayId, event) {
+            event.stopPropagation();
+            const dayCard = document.getElementById(dayId);
+            const isCompleted = !dayCard.classList.contains('completed');
+            dayCard.classList.toggle('completed');
+            const button = event.target;
+            button.textContent = isCompleted ? 'Completed' : 'Mark Complete';
+            
+            // Save the completion status
+            saveProgress(dayId, isCompleted);
+        }
+
+        function loadWorkouts() {
+            const month = document.getElementById('monthSelect').value;
+            const week = document.getElementById('weekSelect').value;
+            
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday'];
+            days.forEach(day => {
+                const details = document.getElementById(`details-${day}`);
+                if (details) {
+                    details.innerHTML = '';
+                }
+                
+                // Load and apply saved completion status
+                const dayCard = document.getElementById(day);
+                const button = dayCard.querySelector('.complete-btn');
+                const isCompleted = loadProgress(day);
+                
+                if (isCompleted) {
+                    dayCard.classList.add('completed');
+                    button.textContent = 'Completed';
+                } else {
+                    dayCard.classList.remove('completed');
+                    button.textContent = 'Mark Complete';
+                }
+            });
+            
+            if (month === '1') {
+                if (week === '1') {
+                    loadMonth1Week1Workouts();
+                } else if (week === '2') {
+                    loadMonth1Week2Workouts();
+                } else if (week === '3') {           
+                    loadMonth1Week3Workouts();       
+                } else if (week === '4') {           
+                    loadMonth1Week4Workouts();       
+                }
+            } else if (month === '2') {
+                if (week === '1') {
+                    loadMonth2Week1Workouts();
+                } else if (week === '2') {
+                    loadMonth2Week2Workouts();
+                } else if (week === '3') {
+                    loadMonth2Week3Workouts();
+                } else if (week === '4') {
+                    loadMonth2Week4Workouts();
+                }
+            } else if (month === '3') {
+                if (week === '1') {
+                    loadMonth3Week1Workouts();
+                } else if (week === '2') {
+                    loadMonth3Week2Workouts();
+                } else if (week === '3') {
+                    loadMonth3Week3Workouts();
+                } else if (week === '4') {
+                    loadMonth3Week4Workouts();
+                }
+            }
+        }  
+    </script>
 </body>
 </html>
