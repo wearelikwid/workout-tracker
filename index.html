@@ -5,51 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workout Tracker</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f0f0f0;
+        :root {
+            --primary-color: #8B5CF6;
+            --background-dark: #1A1A1A;
+            --card-background: #FFFFFF;
+            --text-dark: #333333;
+            --accent-yellow: #E9FF63;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+            padding-bottom: 80px;
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+
+        .app-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
         .controls {
+            background: #2A2A2A;
+            padding: 15px;
+            border-radius: 15px;
             margin-bottom: 20px;
         }
+
+        select {
+            background: #3A3A3A;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-right: 10px;
+            font-size: 16px;
+            width: calc(50% - 10px);
+            cursor: pointer;
+        }
+
+        select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .workout-card {
+            background: var(--card-background);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .workout-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .workout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .day-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .workout-stats {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .complete-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .complete-btn:hover {
+            background: #7C3AED;
+        }
+
+        .workout-details {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #F5F5F5;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .workout-card.completed {
+            border: 2px solid var(--primary-color);
+        }
+
+        .workout-card.completed .complete-btn {
+            background: #4CAF50;
+        }
+
         .hidden {
             display: none;
         }
-        .workout-card {
-            background-color: white;
+
+        .navigation-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #2A2A2A;
             padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
         }
-        .workout-card.completed {
-            background-color: #e0ffe0;
-        }
-        .workout-details {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-        }
-        .complete-btn {
-            float: right;
-            padding: 5px 10px;
-            background-color: #4CAF50;
+
+        .nav-item {
             color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
         }
-        select {
-            padding: 5px;
-            margin-right: 10px;
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --card-background: #2A2A2A;
+                --text-dark: #FFFFFF;
+            }
+
+            .workout-details {
+                background: #3A3A3A;
+                color: #FFFFFF;
+            }
+
+            .workout-stats {
+                color: #BBBBBB;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="app-header">
+        <span class="back-button">‹</span>
+        <div class="app-title">90 Day Workout Plan</div>
+    </div>
+
     <div class="controls">
         <select id="monthSelect" onchange="handleMonthChange()">
             <option value="">Select Month</option>
@@ -68,31 +212,97 @@
 
     <div id="workoutContainer" class="hidden">
         <div id="sunday" class="workout-card" onclick="toggleDayDetails('sunday')">
-            <span>Sunday</span>
-            <button class="complete-btn" onclick="markComplete('sunday', event)">Mark Complete</button>
+            <div class="workout-header">
+                <div class="day-title">Sunday</div>
+                <button class="complete-btn" onclick="markComplete('sunday', event)">Mark Complete</button>
+            </div>
+            <div class="workout-stats">
+                <div class="stat">
+                    <i class="far fa-clock"></i>
+                    <span class="duration">45 min</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-fire"></i>
+                    <span class="calories">300 kcal</span>
+                </div>
+            </div>
             <div id="details-sunday" class="workout-details"></div>
         </div>
 
         <div id="monday" class="workout-card" onclick="toggleDayDetails('monday')">
-            <span>Monday</span>
-            <button class="complete-btn" onclick="markComplete('monday', event)">Mark Complete</button>
+            <div class="workout-header">
+                <div class="day-title">Monday</div>
+                <button class="complete-btn" onclick="markComplete('monday', event)">Mark Complete</button>
+            </div>
+            <div class="workout-stats">
+                <div class="stat">
+                    <i class="far fa-clock"></i>
+                    <span class="duration">45 min</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-fire"></i>
+                    <span class="calories">300 kcal</span>
+                </div>
+            </div>
             <div id="details-monday" class="workout-details"></div>
         </div>
 
         <div id="tuesday" class="workout-card" onclick="toggleDayDetails('tuesday')">
-            <span>Tuesday</span>
-            <button class="complete-btn" onclick="markComplete('tuesday', event)">Mark Complete</button>
+            <div class="workout-header">
+                <div class="day-title">Tuesday</div>
+                <button class="complete-btn" onclick="markComplete('tuesday', event)">Mark Complete</button>
+            </div>
+            <div class="workout-stats">
+                <div class="stat">
+                    <i class="far fa-clock"></i>
+                    <span class="duration">45 min</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-fire"></i>
+                    <span class="calories">300 kcal</span>
+                </div>
+            </div>
             <div id="details-tuesday" class="workout-details"></div>
         </div>
 
         <div id="wednesday" class="workout-card" onclick="toggleDayDetails('wednesday')">
-            <span>Wednesday</span>
-            <button class="complete-btn" onclick="markComplete('wednesday', event)">Mark Complete</button>
+            <div class="workout-header">
+                <div class="day-title">Wednesday</div>
+                <button class="complete-btn" onclick="markComplete('wednesday', event)">Mark Complete</button>
+            </div>
+            <div class="workout-stats">
+                <div class="stat">
+                    <i class="far fa-clock"></i>
+                    <span class="duration">45 min</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-fire"></i>
+                    <span class="calories">300 kcal</span>
+                </div>
+            </div>
             <div id="details-wednesday" class="workout-details"></div>
         </div>
     </div>
 
-    <!-- Link all your workout JavaScript files here -->
+    <div class="navigation-bar">
+        <a href="#" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            Home
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-dumbbell nav-icon"></i>
+            Workouts
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-star nav-icon"></i>
+            Favorites
+        </a>
+    </div>
+
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Your script imports -->
     <script src="month1_week1.js"></script>
     <script src="month1_week2.js"></script>
     <script src="month1_week3.js"></script>
@@ -107,7 +317,6 @@
     <script src="month3_week4.js"></script>
 
     <script>
-        // [Your storage and functionality JavaScript goes here - the code you shared]
         function saveProgress(dayId, isCompleted) {
             const month = document.getElementById('monthSelect').value;
             const week = document.getElementById('weekSelect').value;
@@ -175,7 +384,6 @@
             const button = event.target;
             button.textContent = isCompleted ? 'Completed' : 'Mark Complete';
             
-            // Save the completion status
             saveProgress(dayId, isCompleted);
         }
 
@@ -190,7 +398,6 @@
                     details.innerHTML = '';
                 }
                 
-                // Load and apply saved completion status
                 const dayCard = document.getElementById(day);
                 const button = dayCard.querySelector('.complete-btn');
                 const isCompleted = loadProgress(day);
@@ -235,7 +442,7 @@
                     loadMonth3Week4Workouts();
                 }
             }
-        }  
+        }
     </script>
 </body>
 </html>
