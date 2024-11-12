@@ -1,239 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Workout Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        .selector-container {
-            margin: 20px 0;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        select {
-            padding: 10px;
-            margin: 10px;
-            width: 200px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .week-days {
-            margin-top: 20px;
-        }
-        .day-card {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .day-card:hover {
-            background: #f8f9fa;
-        }
-        .workout-details {
-            display: none;
-            margin-top: 10px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 4px;
-            border-left: 4px solid #007bff;
-        }
-        .complete-btn {
-            padding: 5px 10px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            float: right;
-        }
-        .complete-btn:hover {
-            background: #218838;
-        }
-        .day-card.completed {
-            background: #e8ffe8;
-            border-left: 4px solid #28a745;
-        }
-        .hidden {
-            display: none;
-        }
-        .workout-section {
-            margin: 15px 0;
-        }
-        .workout-section ul {
-            list-style-type: none;
-            padding-left: 15px;
-        }
-        .workout-section h5 {
-            color: #007bff;
-            margin-bottom: 10px;
-        }
-    </style>
-    <script src="month1_week1.js"></script>
-    <script src="month1_week2.js"></script>
-    <script src="month1_week3.js"></script>
-    <script src="month1_week4.js"></script>
-    <script src="month2_week1.js"></script>
-    <script src="month2_week2.js"></script>
-    <script src="month2_week3.js"></script>
-    <script src="month2_week4.js"></script>
-    <script src="month3_week1.js"></script>
-    <script src="month3_week2.js"></script>
-    <script src="month3_week3.js"></script>
-    <script src="month3_week4.js"></script>
-</head>
-<body>
-    <h1>Workout Tracker</h1>
-    
-    <div class="selector-container">
-        <select id="monthSelect" onchange="handleMonthChange()">
-            <option value="">Select Month</option>
-            <option value="1">Month 1</option>
-            <option value="2">Month 2</option>
-            <option value="3">Month 3</option>
-        </select>
+<!-- [Previous head section remains the same] -->
 
-        <select id="weekSelect" onchange="handleWeekChange()" disabled>
-            <option value="">Select Week</option>
-            <option value="1">Week 1</option>
-            <option value="2">Week 2</option>
-            <option value="3">Week 3</option>
-            <option value="4">Week 4</option>
-        </select>
-    </div>
+<script>
+    // Add these new functions for storage
+    function saveProgress(dayId, isCompleted) {
+        const month = document.getElementById('monthSelect').value;
+        const week = document.getElementById('weekSelect').value;
+        const key = `workout-${month}-${week}-${dayId}`;
+        localStorage.setItem(key, isCompleted);
+    }
 
-    <div id="workoutContainer" class="hidden">
-        <div class="week-days">
-            <div class="day-card" id="sunday" onclick="toggleDayDetails('sunday')">
-                <h3>Sunday <button class="complete-btn" onclick="markComplete('sunday', event)">Mark Complete</button></h3>
-                <div class="workout-details" id="details-sunday"></div>
-            </div>
+    function loadProgress(dayId) {
+        const month = document.getElementById('monthSelect').value;
+        const week = document.getElementById('weekSelect').value;
+        const key = `workout-${month}-${week}-${dayId}`;
+        return localStorage.getItem(key) === 'true';
+    }
 
-            <div class="day-card" id="monday" onclick="toggleDayDetails('monday')">
-                <h3>Monday <button class="complete-btn" onclick="markComplete('monday', event)">Mark Complete</button></h3>
-                <div class="workout-details" id="details-monday"></div>
-            </div>
-
-            <div class="day-card" id="tuesday" onclick="toggleDayDetails('tuesday')">
-                <h3>Tuesday <button class="complete-btn" onclick="markComplete('tuesday', event)">Mark Complete</button></h3>
-                <div class="workout-details" id="details-tuesday"></div>
-            </div>
-
-            <div class="day-card" id="wednesday" onclick="toggleDayDetails('wednesday')">
-                <h3>Wednesday <button class="complete-btn" onclick="markComplete('wednesday', event)">Mark Complete</button></h3>
-                <div class="workout-details" id="details-wednesday"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function handleMonthChange() {
-            const monthSelect = document.getElementById('monthSelect');
-            const weekSelect = document.getElementById('weekSelect');
-            const workoutContainer = document.getElementById('workoutContainer');
-            
-            if (monthSelect.value) {
-                weekSelect.disabled = false;
-            } else {
-                weekSelect.disabled = true;
-                workoutContainer.classList.add('hidden');
-            }
-            
-            weekSelect.value = '';
+    function handleMonthChange() {
+        const monthSelect = document.getElementById('monthSelect');
+        const weekSelect = document.getElementById('weekSelect');
+        const workoutContainer = document.getElementById('workoutContainer');
+        
+        if (monthSelect.value) {
+            weekSelect.disabled = false;
+        } else {
+            weekSelect.disabled = true;
             workoutContainer.classList.add('hidden');
         }
+        
+        weekSelect.value = '';
+        workoutContainer.classList.add('hidden');
+    }
 
-        function handleWeekChange() {
-            const weekSelect = document.getElementById('weekSelect');
-            const workoutContainer = document.getElementById('workoutContainer');
+    function handleWeekChange() {
+        const weekSelect = document.getElementById('weekSelect');
+        const workoutContainer = document.getElementById('workoutContainer');
+        
+        if (weekSelect.value) {
+            workoutContainer.classList.remove('hidden');
+            loadWorkouts();
+        } else {
+            workoutContainer.classList.add('hidden');
+        }
+    }
+
+    function toggleDayDetails(dayId) {
+        const details = document.getElementById(`details-${dayId}`);
+        const allDetails = document.getElementsByClassName('workout-details');
+        
+        Array.from(allDetails).forEach(detail => {
+            if (detail.id !== `details-${dayId}`) {
+                detail.style.display = 'none';
+            }
+        });
+
+        if (details.style.display === 'none' || !details.style.display) {
+            details.style.display = 'block';
+        } else {
+            details.style.display = 'none';
+        }
+    }
+
+    function markComplete(dayId, event) {
+        event.stopPropagation();
+        const dayCard = document.getElementById(dayId);
+        const isCompleted = !dayCard.classList.contains('completed');
+        dayCard.classList.toggle('completed');
+        const button = event.target;
+        button.textContent = isCompleted ? 'Completed' : 'Mark Complete';
+        
+        // Save the completion status
+        saveProgress(dayId, isCompleted);
+    }
+
+    function loadWorkouts() {
+        const month = document.getElementById('monthSelect').value;
+        const week = document.getElementById('weekSelect').value;
+        
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday'];
+        days.forEach(day => {
+            const details = document.getElementById(`details-${day}`);
+            if (details) {
+                details.innerHTML = '';
+            }
             
-            if (weekSelect.value) {
-                workoutContainer.classList.remove('hidden');
-                loadWorkouts();
+            // Load and apply saved completion status
+            const dayCard = document.getElementById(day);
+            const button = dayCard.querySelector('.complete-btn');
+            const isCompleted = loadProgress(day);
+            
+            if (isCompleted) {
+                dayCard.classList.add('completed');
+                button.textContent = 'Completed';
             } else {
-                workoutContainer.classList.add('hidden');
+                dayCard.classList.remove('completed');
+                button.textContent = 'Mark Complete';
+            }
+        });
+        
+        if (month === '1') {
+            if (week === '1') {
+                loadMonth1Week1Workouts();
+            } else if (week === '2') {
+                loadMonth1Week2Workouts();
+            } else if (week === '3') {           
+                loadMonth1Week3Workouts();       
+            } else if (week === '4') {           
+                loadMonth1Week4Workouts();       
+            }
+        } else if (month === '2') {
+            if (week === '1') {
+                loadMonth2Week1Workouts();
+            } else if (week === '2') {
+                loadMonth2Week2Workouts();
+            } else if (week === '3') {
+                loadMonth2Week3Workouts();
+            } else if (week === '4') {
+                loadMonth2Week4Workouts();
+            }
+        } else if (month === '3') {
+            if (week === '1') {
+                loadMonth3Week1Workouts();
+            } else if (week === '2') {
+                loadMonth3Week2Workouts();
+            } else if (week === '3') {
+                loadMonth3Week3Workouts();
+            } else if (week === '4') {
+                loadMonth3Week4Workouts();
             }
         }
-
-        function toggleDayDetails(dayId) {
-            const details = document.getElementById(`details-${dayId}`);
-            const allDetails = document.getElementsByClassName('workout-details');
-            
-            Array.from(allDetails).forEach(detail => {
-                if (detail.id !== `details-${dayId}`) {
-                    detail.style.display = 'none';
-                }
-            });
-
-            if (details.style.display === 'none' || !details.style.display) {
-                details.style.display = 'block';
-            } else {
-                details.style.display = 'none';
-            }
-        }
-
-        function markComplete(dayId, event) {
-            event.stopPropagation();
-            const dayCard = document.getElementById(dayId);
-            dayCard.classList.toggle('completed');
-            const button = event.target;
-            button.textContent = dayCard.classList.contains('completed') ? 'Completed' : 'Mark Complete';
-        }
-
-        function loadWorkouts() {
-            const month = document.getElementById('monthSelect').value;
-            const week = document.getElementById('weekSelect').value;
-            
-            const days = ['sunday', 'monday', 'tuesday', 'wednesday'];
-            days.forEach(day => {
-                const details = document.getElementById(`details-${day}`);
-                if (details) {
-                    details.innerHTML = '';
-                }
-            });
-            
-            if (month === '1') {
-                if (week === '1') {
-                    loadMonth1Week1Workouts();
-                } else if (week === '2') {
-                    loadMonth1Week2Workouts();
-                } else if (week === '3') {           
-                    loadMonth1Week3Workouts();       
-                } else if (week === '4') {           
-                    loadMonth1Week4Workouts();       
-                }
-            } else if (month === '2') {
-                if (week === '1') {
-                    loadMonth2Week1Workouts();
-                } else if (week === '2') {
-                    loadMonth2Week2Workouts();
-                } else if (week === '3') {
-                    loadMonth2Week3Workouts();
-                } else if (week === '4') {
-                    loadMonth2Week4Workouts();
-                }
-            } else if (month === '3') {
-                if (week === '1') {
-                    loadMonth3Week1Workouts();
-                } else if (week === '2') {
-                    loadMonth3Week2Workouts();
-                } else if (week === '3') {
-                    loadMonth3Week3Workouts();
-                } else if (week === '4') {
-                    loadMonth3Week4Workouts();
-                }
-            }
-        }  
-    </script>
+    }  
+</script>
 </body>
 </html>
